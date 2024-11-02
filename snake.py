@@ -77,6 +77,7 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        # The snake controls
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_DOWN:
                 snake.ydir = 1
@@ -90,6 +91,7 @@ while True:
             elif event.key == pygame.K_LEFT:
                 snake.ydir = 0
                 snake.xdir = -1
+            # up the FPS or slow down the FPS
             elif event.key == pygame.K_KP_PLUS:
                 fps += 1
             elif event.key == pygame.K_KP_MINUS:
