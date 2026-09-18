@@ -10,7 +10,7 @@ print(f'{c.Fore.WHITE}')
 slots = ["🍋","🍎","🍇","🍊",'🍓','🍍','🍒']
 # variables
 lc,ac,gc,oc,sc,pc,cc=1,1,1,1,1,1,1
-money = 5
+money = 100
 bet = 5
 speed = 1
 reward=2
