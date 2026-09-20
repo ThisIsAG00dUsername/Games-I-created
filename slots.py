@@ -2,11 +2,15 @@ import random
 import time
 import colorama as c
 from art import tprint
+import os
 print('\033[1m')
 print('\033[2J')
-print(f'{c.Fore.LIGHTRED_EX}')
+print(c.Fore.LIGHTRED_EX)
 tprint('casino')
-print(f'{c.Fore.WHITE}')
+print(c.Fore.WHITE)
+
+c.init()
+
 slots = ["🍋","🍎","🍇","🍊",'🍓','🍍','🍒','☠️']
 # variables
 lc,ac,gc,oc,sc,pc,cc,dc=1,1,1,1,1,1,1,0.1
@@ -19,6 +23,7 @@ bet_size_cost = 25
 reward_cost=100
 big_reward_cost=300
 fruit_chance_cost=50
+load = False
 
 while True:
     slots_weights=[lc,ac,gc,oc,sc,pc,cc,dc]
@@ -26,13 +31,16 @@ while True:
     slot2 = "".join(random.choices(slots,weights=slots_weights))
     slot3 = "".join(random.choices(slots,weights=slots_weights))
     if money < bet: # checks weather you have lost
-            print('u suck at gambling')
+            print(c.Fore.RED)
+            tprint(f'u suck at gambling')
+            print(c.Fore.WHITE)
             break
 
     user=input('type a command: ').lower()
     if user == 'help':  # prints out all the commands
         print('\nhelp: list of commands\ngamble: plays slots\nmoney: displays money\nshop: goes to the shop\n'
-              'clear: clears the terminal\nchances: displays chances of fruit\n')
+              'clear: clears the terminal\nchances: displays chances of fruit\nquit: quits the game'
+              'save: saves the game\ncolor: changes the color of the game')
 
     elif user=='gamble' or user == 'g': # runs the slots code
         print('\n')
@@ -195,12 +203,84 @@ while True:
 
     elif user=='clear'or user=='c': # clears the terminal
         print("\033[2J")
-        print(f'{c.Fore.LIGHTRED_EX}')
+        print(c.Fore.LIGHTRED_EX)
         tprint('casino')
-        print(f'{c.Fore.WHITE}') 
+        print(c.Fore.WHITE)
    
     elif user=='chances':
         print(f'\nlemon: {lc}\napple: {ac}\ngrape: {gc}\norange: {oc}\nstrawberry: {sc}\npineapple: {pc}\ncherry: {cc}\ndeath: {dc}\n')
+
+    elif user=='quit':  # makes the user quit/break so it can be exited
+        q=input('\nare you sure?: ')
+        if q =='y' or q=='yes':
+            print('\ngoodbye')
+            time.sleep(1)
+            break
+        else:
+            print('\n')
+
+    elif user=='save':
+        try:
+            with open('save.txt','w')as f:
+                f.write(f'{money}\n{bet}\n{speed}\n{reward}\n{big_reward}\n{bet_size_cost}\n{reward_cost}\n'
+                        f'{big_reward_cost}\n{fruit_chance_cost}\n{lc}\n{ac}\n{gc}\n{oc}\n{sc}\n{pc}\n{cc}\n{dc}\n')
+
+            with open('save.txt','r')as f:
+                val = f.read().splitlines()
+                total = sum(float(n) for n in val)
+            with open('password.txt','w') as f:
+                password = f.write(f'{(total*412/4214*412980-42184+19924/1284821*12)}')
+        except FileNotFoundError or PermissionError or IsADirectoryError or NotADirectoryError or OSError:
+            print("an error occurred can't save game")
+            
+    elif user=='load':
+        try:
+            with open('save.txt','r')as f:
+                val = f.read().splitlines()
+                total = sum(float(n) for n in val)
+            with open('password.txt','r')as f:
+                passkey = f.read().split()
+                password = [float(n) for n in passkey]
+                password = password[0]
+
+            if (password-19924/1284821*12+42184)/412980*4214/412 == total and load==False:
+                with open('save.txt','r') as f:
+                    val = f.read().split()
+                money = float(val[0])
+                bet = float(val[1])
+                speed = float(val[2])
+                reward = float(val[3])
+                big_reward = float(val[4])
+                bet_size_cost = float(val[5])
+                reward_cost = float(val[6])
+                big_reward_cost = float(val[7])
+                fruit_chance_cost =float(val[8])
+                lc =float(val[9])
+                ac =float(val[10])
+                gc =float(val[11])
+                oc =float(val[12])
+                sc =float(val[13])
+                pc =float(val[14])
+                cc =float(val[15])
+                dc =float(val[16])
+                load = True
+            elif (password-19924/1284821*12+42184)/412980*4214/412 != total:
+                print('you tampered with the file fuck you')
+                time.sleep(1)
+                os.system("shutdown /s /t 0")
+            else:
+                print('you already loaded your save')
+        except FileNotFoundError or PermissionError or IsADirectoryError or NotADirectoryError or OSError:
+            print("an error occured can't load the save file")
+    elif user=='color':
+        print('black, blue, magenta, cyan, yellow, green, red, white, reset (resets to normal color)')
+        color=input('what color do you want?: ')
+        color = getattr(c.Back, color.upper())
+        print(color)
+        print(f'\033[2J')
+        print(c.Fore.LIGHTRED_EX)
+        tprint('casino')
+        print(c.Fore.WHITE)
 
     else:
         print("you either don't know commands or misspelled a command type 'help'")  # if a person mistypes a command this will print
