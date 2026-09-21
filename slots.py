@@ -34,6 +34,9 @@ while True:
             print(c.Fore.RED)
             tprint(f'u suck at gambling')
             print(c.Fore.WHITE)
+            os.remove('save.txt')
+            os.remove('password.txt')
+            time.sleep(1)
             break
 
     user=input('type a command: ').lower()
