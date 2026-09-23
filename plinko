@@ -1,0 +1,103 @@
+from enum import auto
+import random
+import sys
+import time
+import colorama as c
+sys.stdout.write('\033[2J')
+money = 10000
+bet = 5
+gravity = 1
+lnr = [0,1]
+l,r = 1,1
+weight = [l,r]
+while True:
+    sys.stdout.write('\033[H')
+    colmn = 8
+    rows = 6
+    height = 3
+    position = 0
+    if money < bet:
+        print('u lost :(')
+        break
+
+    user = input('Enter a command: ').lower()
+    if user =='gamble' or user =='g':
+        sys.stdout.write('\033[2J')
+        if money < bet:
+            print('u lost')
+            break
+        money -= bet
+        print(
+        '       .\n'
+        '      . . \n'
+        '     . . . \n' 
+        '    . . . . \n' 
+        '   . . . . . \n'
+        '  . . . . . . \n' 
+        f' {c.Fore.MAGENTA}■ {c.Fore.RED}■ {c.Fore.YELLOW}■ {c.Fore.GREEN}■ {c.Fore.YELLOW}■ {c.Fore.RED}■ {c.Fore.MAGENTA}■{c.Fore.RESET}\n')
+        for row in range(rows):
+            bounce = random.choices(lnr,weight)
+            if bounce == 0:
+                position -= 1  # bounce left
+                sys.stdout.write(f'\033[{height-1};{colmn-1}H')
+                print('o')
+                time.sleep(gravity)
+                sys.stdout.write(f'\033[{height-1};{colmn-1}H')
+                print(' ')
+                height +=1
+                colmn -=1
+            else:
+                position += 1  # bounce right
+                sys.stdout.write(f'\033[{height-1};{colmn+1}H')
+                print('o')
+                time.sleep(gravity)
+                sys.stdout.write(f'\033[{height-1};{colmn+1}H')
+                print(' ')
+                height+=1
+                colmn += 1
+                # g 8 y 6 10 r 4 12 m 2 14
+        if height == 9 and colmn == 8:
+            money += (bet * 0)
+        elif height == 9 and (colmn == 6 or colmn == 10):
+            money += (bet * 0.5)
+        elif height == 9 and (colmn == 4 or colmn == 12):
+            money += (bet * 3)
+        elif height == 9 and (colmn == 2 or colmn == 14):
+            money += (bet * 5)
+        sys.stdout.write('\033[10;1H')
+        sys.stdout.write('\033[2J')
+        
+    elif user=='rewards' or user=='r':
+        sys.stdout.write('\033[2J')
+        print(f'{c.Fore.MAGENTA}■: x5\n{c.Fore.RED}■: x3\n{c.Fore.YELLOW}■: x0.5\n{c.Fore.GREEN}■: x0{c.Fore.RESET}')
+
+    elif user == 'money' or user =='m':
+        sys.stdout.write('\033[2J')
+        print(f'you have ${money}')
+        
+
+    elif user=='shop' or user=='s':
+        sys.stdout.write('\033[2J')
+        print('\nrewards: increase the reward gain\ngravity: increases the falling speed $10\nchance: increase the chance of it going either left or right\n')
+        shop=input('what would you like to buy?: ')
+        if shop=='gravity' or shop=='g':
+            money -= 10
+            if gravity <= 0.05:
+                gravity == 0.05
+                gravity = round(gravity,2)
+                print('max speed reached')
+            elif gravity <=0.2:
+                gravity -= 0.05
+                gravity = round(gravity,2)
+                print('almmost reached')
+            else:
+                gravity -= 0.1
+                gravity = round(gravity,2)
+        elif shop=='chances' or shop=='c':
+            print('left: chances for going left\nright: chances of going right')
+            chances=input('left or right chances?: ')
+            if chances == 'left':
+                money -= 50
+                l += 0.1
+            elif chances=='right':
+                r += 0.1
